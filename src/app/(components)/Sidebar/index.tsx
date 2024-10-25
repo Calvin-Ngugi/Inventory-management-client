@@ -1,25 +1,55 @@
 "use client"
 
-import { useAppSelector } from '@/app/redux';
+import { useAppDispatch, useAppSelector } from '@/app/redux';
 import { setIsSideBarCollapsed } from '@/state';
-import { Menu } from 'lucide-react'
+import { Archive, CircleDollarSign, Clipboard, Layout, LucideIcon, Menu, SlidersHorizontal, Users } from 'lucide-react'
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import React from 'react'
-import { useDispatch } from 'react-redux';
+
+interface SidebarLinkProps {
+    href: string;
+    icon: LucideIcon;
+    label: string;
+    isCollapsed: boolean;
+}
+
+const SideBarLink = ({
+    href,
+    icon: Icon,
+    label,
+    isCollapsed
+}: SidebarLinkProps) => {
+    const pathname = usePathname();
+    const isActive = pathname === href || (pathname === '/' && href === '/dashboard');
+
+    return (
+        <Link href={href}>
+            <div className={`cursor-pointer flex items-center ${isCollapsed ? 'justify-center py-4' : 'justify-start px-8 py-4'
+                } hover:text-blue-500 hover:bg-blue-100 gap-3 transition-colors ${isActive ? 'bg-blue-200 text-white' : ''
+                }`}>
+                <Icon className='w-6 h-6 ! text-gray-700' />
+                <span className={`${isCollapsed ? 'hidden' : 'block'} font-medium text-gray-700`}>
+                    {label}
+                </span>
+            </div>
+        </Link>
+    )
+}
 
 const Sidebar = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const isSideBarCollapsed = useAppSelector(
-        (state) => state.global.isSideBarCollapsed 
-     );
+        (state) => state.global.isSideBarCollapsed
+    );
 
-     const toggleSidebar = () => {
+    const toggleSidebar = () => {
         dispatch(setIsSideBarCollapsed(!isSideBarCollapsed));
-     };
+    };
 
-     const sideBarClassNames = `fixed flex flex-col ${
-        isSideBarCollapsed ? 'w-0 md:w-16' : 'w-72 md:w-64'
-     } bg-white transition-all duration-300 overflow-hidden h-full shadow-md z-40`
+    const sideBarClassNames = `fixed flex flex-col ${isSideBarCollapsed ? 'w-0 md:w-16' : 'w-72 md:w-64'
+        } bg-white transition-all duration-300 overflow-hidden h-full shadow-md z-40`
 
     return (
         <div className={sideBarClassNames}>
@@ -34,11 +64,46 @@ const Sidebar = () => {
 
             {/* LINKS */}
             <div className='flex-grow mt-8'>
-                
+                <SideBarLink
+                    href='/dashboard'
+                    icon={Layout}
+                    label='Dashboard'
+                    isCollapsed = {isSideBarCollapsed}
+                />
+                <SideBarLink
+                    href='/inventory'
+                    icon={Archive}
+                    label='Inventory'
+                    isCollapsed = {isSideBarCollapsed}
+                />
+                <SideBarLink
+                    href='/products'
+                    icon={Clipboard}
+                    label='Products'
+                    isCollapsed = {isSideBarCollapsed}
+                />
+                <SideBarLink
+                    href='/users'
+                    icon={Users}
+                    label='Users'
+                    isCollapsed = {isSideBarCollapsed}
+                />
+                <SideBarLink
+                    href='/settings'
+                    icon={SlidersHorizontal}
+                    label='Settings'
+                    isCollapsed = {isSideBarCollapsed}
+                />
+                <SideBarLink
+                    href='/expenses'
+                    icon={CircleDollarSign}
+                    label='Expenses'
+                    isCollapsed = {isSideBarCollapsed}
+                />
             </div>
 
             {/* FOOTER */}
-            <div>
+            <div className={`${isSideBarCollapsed ? 'hidden' : 'block'} mb-10`}>
                 <p className='text-center text-xs text-gray-500'>&copy; 2024 Edstock</p>
             </div>
         </div>
