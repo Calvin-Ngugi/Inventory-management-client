@@ -56,7 +56,7 @@ const CardSalesSummary = () => {
           </div>
 
           {/* BODY */}
-          <div>
+          <div className="overflow-auto h-full">
             {/* BODY HEADER */}
             <div className="flex justify-between items-center mb-6 px-7 mt-5">
               <div className="text-lg font-medium">
